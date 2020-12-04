@@ -14,6 +14,7 @@ def read_passports(lines, divider):
         for entry in entries:
             (key,value) = entry.split(":")
             passport[key.strip()] = value.strip()
+    yield passport
 
 passports = list(read_passports(lines,'\n'))
 # print(passports[-1:])
