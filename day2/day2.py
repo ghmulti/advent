@@ -1,4 +1,3 @@
-
 import re
 
 day2_lines = open("./day2/input.txt")
