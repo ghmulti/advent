@@ -1,25 +1,18 @@
-from itertools import islice, repeat
+from itertools import islice, repeat, count
 from functools import reduce
 import operator
 
 lines = open("./day3/input.txt").readlines()
 # print(list(lines))
 
-def hops(padding_x):
-    start = 0
-    while True:
-        yield start
-        start = start + padding_x
-
 def objs(line, hop):
     md = hop % len(line)
     # print(md)
-    return line[md]
-    
+    return line[md]    
 
 def number_of_trees(padding_x, padding_y):
     line_num = 0
-    hops_gen = hops(padding_x)
+    hops_gen = count(start=0, step=padding_x)
     objects = []
     while line_num < len(lines):
         objects.append(objs(lines[line_num].strip(), next(hops_gen)))

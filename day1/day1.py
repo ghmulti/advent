@@ -6,12 +6,8 @@ import operator
 day1_lines = open("./day1/input.txt")
 lines = day1_lines.readlines()
 
-def conv(lst):
-    for e in lst:
-        yield int(e.strip())
-
 def calc(lines, amount):
-    mapped_lines = combinations(conv(lines), amount)
+    mapped_lines = combinations(map(int, lines), amount)
     return (entry for entry in mapped_lines if sum(entry) == 2020)
     
 ###### part 1
