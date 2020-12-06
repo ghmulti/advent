@@ -1,6 +1,7 @@
 
 from itertools import combinations, islice
 from functools import reduce 
+import operator
 
 day1_lines = open("./day1/input.txt")
 lines = day1_lines.readlines()
@@ -15,8 +16,8 @@ def calc(lines, amount):
     
 ###### part 1
 passed_2 = next(calc(lines, 2))
-print(passed_2, reduce(lambda x,y: x * y, passed_2))
+print(passed_2, reduce(operator.mul, passed_2))
 
 ###### part 2
 passed_3 = next(calc(lines, 3))
-print(passed_3, reduce(lambda x,y: x * y, passed_3))
+print(passed_3, reduce(operator.mul, passed_3))

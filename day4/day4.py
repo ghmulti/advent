@@ -33,10 +33,10 @@ strict_rules = [
 ]
 
 def validate_passport(passport):
-    return next((False for field in required_fields if field not in passport), True)
+    return all(False for field in required_fields if field not in passport)
 
 def validate_passport_strict(passport):
-    return next((False for rule in strict_rules if not rule(passport)), True)
+    return all(False for rule in strict_rules if not rule(passport))
 
 #### part 1
 valid_passports = list(filter(validate_passport, passports))

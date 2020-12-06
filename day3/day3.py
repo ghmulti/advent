@@ -1,5 +1,6 @@
 from itertools import islice, repeat
 from functools import reduce
+import operator
 
 lines = open("./day3/input.txt").readlines()
 # print(list(lines))
@@ -41,5 +42,5 @@ print(f"7,1={trees_7_1}")
 trees_1_2 = number_of_trees(1,2)
 print(f"1,2={trees_1_2}")
 
-result = reduce(lambda x,y: x * y, [trees_1_1, trees_3_1, trees_5_1, trees_7_1, trees_1_2])
+result = reduce(operator.mul, [trees_1_1, trees_3_1, trees_5_1, trees_7_1, trees_1_2])
 print(result)
