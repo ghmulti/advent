@@ -7,6 +7,7 @@ group_answers = list(group.split() for group in groups)
 # print(group_answers[:1])
 group_answers_unique = list(set(itertools.chain.from_iterable(answers)) for answers in group_answers)
 # print(group_answers_unique[:1])
+# print(group_answers_unique[-1:])
 
 #### part 1
 group_answers_unique_count = sum(len(answers) for answers in group_answers_unique)
@@ -19,10 +20,11 @@ def answered_by_all(group_answer, answer):
 assert answered_by_all(["abc", "cde", "cfg"], "c") == True
 assert answered_by_all(["abc", "def"], "a") == False
 
-counter = 0
-for (group_answer, group_answer_unique) in zip(group_answers, group_answers_unique):
-    # print(f"Checking group {group_answer} with unique answers {group_answer_unique}")
-    group_answer_by_all = list(answer for answer in group_answer_unique if answered_by_all(group_answer, answer))
-    # print(f"{group_answer_by_all} found for every answer in {group_answer}")
-    counter += len(group_answer_by_all)
-print(f"Sum of count of questions answered by all in group {counter}")
+def answers_answered_by_all(group_answer, answers):
+    return set(answer for answer in answers if answered_by_all(group_answer, answer))
+
+assert len(answers_answered_by_all(['kzardg', 'dkzgura', 'zdagrk', 'gdrak'], {'z', 'k', 'd', 'r', 'g', 'a', 'u'}).difference(['k', 'd', 'r', 'g', 'a'])) == 0
+
+counters = list(len(answers_answered_by_all(ga, gau)) for (ga, gau) in zip(group_answers, group_answers_unique))
+
+print(f"Sum of count of questions answered by all in group {sum(counters)}")
