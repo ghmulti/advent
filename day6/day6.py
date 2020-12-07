@@ -15,7 +15,7 @@ print(f"Sum of the unique answered questions count per group {group_answers_uniq
 
 #### part 2
 def answered_by_all(group_answer, answer):
-    return all(False for person_answer in group_answer if answer not in person_answer)    
+    return all(answer in person_answer for person_answer in group_answer)    
 
 assert answered_by_all(["abc", "cde", "cfg"], "c") == True
 assert answered_by_all(["abc", "def"], "a") == False
