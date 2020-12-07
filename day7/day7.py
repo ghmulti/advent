@@ -8,7 +8,7 @@ groups = lines.split("\n")
 src_p = re.compile("([\w\s]+) bag")
 target_p = re.compile("(\d+) ([\w\s]+) bag")
 
-tree = {}
+bags = {}
 for group in groups:
     subgroup = group.split("contain")
 
@@ -22,7 +22,7 @@ for group in groups:
     # print(f"Source color: [{src_group}]")
 
     target_subgroups = subgroup[1].split(",")
-    tree_children = []
+    bags_children = []
     for target_subgroup in target_subgroups:
         # print(target_subgroup)
         target_match = target_p.search(target_subgroup)
@@ -30,18 +30,18 @@ for group in groups:
             target_number = target_match.group(1)
             target_group = target_match.group(2)
             # print(f"Target group for {src_group}: {target_group}")            
-            tree_children.append([target_group, int(target_number)])
+            bags_children.append([target_group, int(target_number)])
 
-    tree[src_group] = tree_children
+    bags[src_group] = bags_children
 
-# print(tree)
+# print(bags)
 
 #### part 1
 
 def search_parent(search_item):
     # print(f"Working with {search_item}")
     result = set()
-    for src, children in tree.items():
+    for src, children in bags.items():
         target_items = list(child[0] for child in children)
         if search_item in target_items:
             result.add(src) 
@@ -58,7 +58,7 @@ print(f"Number of bag holders {len(bag_holders)}")
 def search_nested(search_item):    
     # print(f"Working with {search_item}")
     local_sum = 0
-    for item in tree[search_item]:
+    for item in bags[search_item]:
         num = item[1]
         # print(f"Nested for {search_item}: {item}")
         local_sum += num + num * search_nested(item[0])
