@@ -1,4 +1,5 @@
 import re
+from functools import reduce
 
 lines = open("./day7/input.txt").read()
 
@@ -8,33 +9,16 @@ groups = lines.split("\n")
 src_p = re.compile("([\w\s]+) bag")
 target_p = re.compile("(\d+) ([\w\s]+) bag")
 
-bags = {}
-for group in groups:
-    subgroup = group.split("contain")
+def parse_line(acc: map, line: str):
+    if not line:
+        return acc
+    [source_bag, target_bags_str] = line.split(" bags contain")
+    target_bags_raw = target_bags_str.split(",")    
+    target_bag_matches = (target_p.search(target_bag) for target_bag in target_bags_raw)
+    acc[source_bag] = list([m.group(2), int(m.group(1))] for m in target_bag_matches if m)
+    return acc
 
-    source_match = src_p.search(subgroup[0])
-    if source_match:
-        src_group = source_match.group(1)
-    else:
-        continue
-
-    # print(f"Subgroup {subgroup}")
-    # print(f"Source color: [{src_group}]")
-
-    target_subgroups = subgroup[1].split(",")
-    bags_children = []
-    for target_subgroup in target_subgroups:
-        # print(target_subgroup)
-        target_match = target_p.search(target_subgroup)
-        if target_match:
-            target_number = target_match.group(1)
-            target_group = target_match.group(2)
-            # print(f"Target group for {src_group}: {target_group}")            
-            bags_children.append([target_group, int(target_number)])
-
-    bags[src_group] = bags_children
-
-# print(bags)
+bags = reduce(parse_line, groups, {})
 
 #### part 1
 
