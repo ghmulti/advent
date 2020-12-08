@@ -13,6 +13,8 @@ group_answers_unique = list(set(itertools.chain.from_iterable(answers)) for answ
 group_answers_unique_count = sum(len(answers) for answers in group_answers_unique)
 print(f"Sum of the unique answered questions count per group {group_answers_unique_count}")
 
+assert group_answers_unique_count == 6596
+
 #### part 2
 def answered_by_all(group_answer, answer):
     return all(answer in person_answer for person_answer in group_answer)    
@@ -28,3 +30,5 @@ assert len(answers_answered_by_all(['kzardg', 'dkzgura', 'zdagrk', 'gdrak'], {'z
 counters = list(len(answers_answered_by_all(ga, gau)) for (ga, gau) in zip(group_answers, group_answers_unique))
 
 print(f"Sum of count of questions answered by all in group {sum(counters)}")
+
+assert sum(counters) == 3219

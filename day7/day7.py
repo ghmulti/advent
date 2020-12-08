@@ -35,7 +35,8 @@ def search_parent(search_item):
 bag_holders = search_parent("shiny gold")
 # print(f"Bag holders {bag_holders}")
 print(f"Number of bag holders {len(bag_holders)}")
-# 179
+
+assert len(bag_holders) == 179
 
 #### part 2
 
@@ -50,4 +51,5 @@ def search_nested(search_item):
  
 total_sum = search_nested("shiny gold")
 print(f"Result {total_sum}")
-# 18925
+
+assert total_sum == 18925
