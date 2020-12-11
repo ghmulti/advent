@@ -39,9 +39,6 @@ def is_valid_list(joltage_with_outlet):
 def build_subgroups(joltage_with_outlet):
     group = []
     for k,v in enumerate(joltage_with_outlet):
-        if k == 0:
-            group.append(v)
-            continue        
         diff = v - joltage_with_outlet[k-1]
         if diff >= 3:
             yield group
