@@ -54,9 +54,9 @@ sample3 = apply_mask_v2('000000000000000000000000000000X1001X', 42)
 assert sample3 == '000000000000000000000000000000X1101X', sample3
 
 def value_combinations(value):
-    value_list = list([index, bit] for index,bit in enumerate(value))
+    value_list = ([index, bit] for index,bit in enumerate(value))
     xes = list(filter(lambda x: x[1] == "X", value_list))
-    products = list(product([0,1], repeat = len(xes)))
+    products = product([0,1], repeat = len(xes))
     for masked_values in products:
         list_copy = list(v for v in value)
         for key, xe in enumerate(xes):
