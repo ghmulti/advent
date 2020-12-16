@@ -22,10 +22,10 @@ def counter(numbers):
 
 print(numbers)
 
-answer_1 = next(islice(counter(numbers), 2020-1, 2020))
+answer_1 = next(islice(counter(numbers), start=2020-1, stop=2020))
 print(f"2020 element is {answer_1}")
 assert answer_1 == 234
 
-answer_2 = next(islice(counter(numbers), 30000000-1, 30000000))
+answer_2 = next(islice(counter(numbers), start=30000000-1, stop=30000000))
 print(f"30000000 element is {answer_2}")
 assert answer_2 == 8984
