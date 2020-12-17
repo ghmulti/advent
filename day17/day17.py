@@ -40,9 +40,9 @@ def find_actives(cycle, current_actives):
                 active_nbs = list(1 for (nb_x,nb_y,nb_z) in nbs if current_actives.get((nb_x,nb_y,nb_z)))
                 val = current_actives.get((x,y,z))
                 # If a cube is active and exactly 2 or 3 of its neighbors are also active, the cube remains active. Otherwise, the cube becomes inactive.
-                # If a cube is inactive but exactly 3 of its neighbors are active, the cube becomes active. Otherwise, the cube remains inactive.
                 if val and len(active_nbs) in [2,3]:
                     target_actives[(x,y,z)] = 1
+                # If a cube is inactive but exactly 3 of its neighbors are active, the cube becomes active. Otherwise, the cube remains inactive.
                 if not val and len(active_nbs) == 3:
                     target_actives[(x,y,z)] = 1
     return target_actives
@@ -73,9 +73,9 @@ def find_actives_v2(cycle, current_actives):
                     active_nbs = list(1 for (nb_x,nb_y,nb_z,nb_w) in nbs if current_actives.get((nb_x,nb_y,nb_z,nb_w)))
                     val = current_actives.get((x,y,z,w))
                     # If a cube is active and exactly 2 or 3 of its neighbors are also active, the cube remains active. Otherwise, the cube becomes inactive.
-                    # If a cube is inactive but exactly 3 of its neighbors are active, the cube becomes active. Otherwise, the cube remains inactive.
                     if val and len(active_nbs) in [2,3]:
                         target_actives[(x,y,z,w)] = 1
+                    # If a cube is inactive but exactly 3 of its neighbors are active, the cube becomes active. Otherwise, the cube remains inactive.
                     if not val and len(active_nbs) == 3:
                         target_actives[(x,y,z,w)] = 1
     return target_actives
