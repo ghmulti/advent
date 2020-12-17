@@ -3,7 +3,7 @@ from itertools import combinations, product
 # lines = open("./day17/input_test.txt").read().splitlines()
 lines = open("./day17/input.txt").read().splitlines()
 
-def neightbours(position, dimension):
+def neighbours(position, dimension):
     products = list(product((-1,0,1), repeat=dimension))
     for prod in products:
         val = list(map(sum, zip(prod, position)))
@@ -11,13 +11,13 @@ def neightbours(position, dimension):
             continue
         yield val
 
-assert len(list(neightbours([0,0,0], 3))) == 26
-assert len(list(neightbours([0,0,0,0], 4))) == 80
+assert len(list(neighbours([0,0,0], 3))) == 26
+assert len(list(neighbours([0,0,0,0], 4))) == 80
 
 def build_cycles(n):
     start = [0]
-    for _ in range(n):
-        start = [start[0]-1] + start + [start[-1]+1]
+    for e in range(1, n+1):
+        start = [-e] + start + [e]
         yield start
 
 cycles = list(build_cycles(6))
@@ -36,7 +36,7 @@ def find_actives(cycle, current_actives):
     for x in range(-15,15):
         for y in range(-15,15):
             for z in cycle:
-                nbs = list(neightbours([x,y,z],3))        
+                nbs = list(neighbours([x,y,z],3))        
                 active_nbs = list(1 for (nb_x,nb_y,nb_z) in nbs if current_actives.get((nb_x,nb_y,nb_z)))
                 val = current_actives.get((x,y,z))
                 # If a cube is active and exactly 2 or 3 of its neighbors are also active, the cube remains active. Otherwise, the cube becomes inactive.
@@ -69,7 +69,7 @@ def find_actives_v2(cycle, current_actives):
         for y in range(-15,15):
             for w in range(-15,15):
                 for z in cycle:
-                    nbs = list(neightbours([x,y,z,w],4))        
+                    nbs = list(neighbours([x,y,z,w],4))        
                     active_nbs = list(1 for (nb_x,nb_y,nb_z,nb_w) in nbs if current_actives.get((nb_x,nb_y,nb_z,nb_w)))
                     val = current_actives.get((x,y,z,w))
                     # If a cube is active and exactly 2 or 3 of its neighbors are also active, the cube remains active. Otherwise, the cube becomes inactive.
