@@ -1,6 +1,7 @@
 import re
 from pprint import pprint
 from functools import reduce
+from copy import deepcopy
 
 lines = open("./day20/input.txt").read().splitlines()[:-1]
 # print(lines)
@@ -109,19 +110,6 @@ def describe_tile(d_tile, adjacent_map, edges_map):
     #     n_tile = tiles_map[neighbour]
     #     print(f"Neighbour {neighbour} {n_tile['edges']}")
 
-# 3221  3313  1451  2143  1283  3803  3989  2267  1453 3413  2609  3343
-# 3169  
-# 3659
-# 3517
-# 1129
-# 1789
-# 3779
-# 1733
-# 1663
-# 2243
-# 2203
-# 3323  3499  3709  1931  2999  2539  3881  1123  1321  2833  2251  3931
-
 # edges: 0 - top, 1 - bottom, 2 - left, 3 - right
 def get_neightbour(tile, edges_map, index):
     edge = tile['edges'][index]
@@ -201,13 +189,93 @@ def normalize_tiles(top_left, tiles_map, adjacent_map, edges_map):
     upper_line_indexes = normalize_first_line(top_left, tiles_map, edges_map)
     row_indexes = [upper_line_indexes]        
     for start_index in start_indexes[1:]:
-        print(f"Working with line {start_index}")
+        # print(f"Working with line {start_index}")
         current_line_indexes = normalize_line(start_index, tiles_map, edges_map, upper_line_indexes)
         upper_line_indexes = current_line_indexes
         row_indexes.append(current_line_indexes)
 
     # pprint(row_indexes)          
+    return row_indexes
 
 tiles_map['3221'] = rotate_tile(rotate_tile(tiles_map['3221']))
 # describe_tile(d_tile=tiles_map['3221'], adjacent_map=adjacent_map, edges_map=edges_map)
-normalize_tiles(top_left='3221', tiles_map=tiles_map, adjacent_map=adjacent_map, edges_map=edges_map)
+row_indexes = normalize_tiles(top_left='3221', tiles_map=tiles_map, adjacent_map=adjacent_map, edges_map=edges_map)
+
+tiles_map_clean = deepcopy(tiles_map)
+for index_row,row in enumerate(row_indexes):
+    for index_column,tile_key in enumerate(row):
+        tiles_map_clean[tile_key]['entries'] = tiles_map_clean[tile_key]['entries'][:-1]
+        tiles_map_clean[tile_key]['entries'] = tiles_map_clean[tile_key]['entries'][1:]
+        tiles_map_clean[tile_key]['entries'] = list("".join(e[:-1]) for e in tiles_map_clean[tile_key]['entries'])
+        tiles_map_clean[tile_key]['entries'] = list("".join(e[1:]) for e in tiles_map_clean[tile_key]['entries'])          
+            
+# ['3221', '3313', '1451', '2143', '1283', '3803', '3989', '2267', '1453', '3413', '2609', '3343']
+# ['3169', '1999', '1777', '2887', '1579', '3373', '1447', '1229', '2437', '1031', '3529', '2719']
+# ['3659', '2381', '1907', '3581', '3677', '3527', '2017', '2521', '1483', '1097', '1511', '1223']
+# ['3517', '1753', '2557', '1303', '2647', '2729', '3329', '2711', '2551', '3391', '1091', '2153']
+# ['1129', '3923', '1051', '3019', '3613', '2383', '1459', '1297', '2843', '1367', '2953', '2617']
+# ['1789', '2477', '1697', '1867', '2029', '2371', '1801', '2309', '2957', '2549', '3301', '2081']
+# ['3779', '2593', '1213', '2339', '2803', '1109', '2293', '2851', '2129', '3467', '2693', '2837']
+# ['1733', '1471', '3719', '2879', '3457', '1493', '1093', '2749', '2137', '3257', '2657', '2927']
+# ['1663', '1019', '2131', '1277', '3557', '2621', '1847', '3919', '1429', '1621', '2347', '1823']
+# ['2243', '2423', '1669', '3943', '3559', '3217', '3739', '2179', '1997', '3469', '2239', '1009']
+# ['2203', '3727', '2897', '2819', '3511', '3299', '2039', '3617', '1201', '3701', '2687', '1913']
+# ['3323', '3499', '3709', '1931', '2999', '2539', '3881', '1123', '1321', '2833', '2251', '3931']
+def prepare_puzzle(tm, row_indexes):
+    puzzle = []
+    for row in row_indexes:        
+        row_entries = list(zip(*(tm[e]['entries'] for e in row)))
+        result_entries = list("".join(e) for e in row_entries)
+        puzzle += result_entries
+    return puzzle
+            
+
+result_puzzle = prepare_puzzle(tiles_map_clean, row_indexes)
+
+# for row in result_puzzle:
+#     print(row)
+
+def is_a_monster(lines):
+    assert len(lines) == 3
+    assert len(lines[0]) == len(lines[1]) == len(lines[2]) == 20
+    if lines[0][18] != '#':
+        return False
+    if next((lines[1][e] for e in [0,5,6,11,12,17,18,19] if lines[1][e] != '#'), False):
+        return False
+    if next((lines[2][e] for e in [1,4,7,10,13,16] if lines[2][e] != '#'), False):
+        return False
+    return True        
+
+sample_monster = """\
+                  # 
+#    ##    ##    ###
+ #  #  #  #  #  #   \
+"""
+assert is_a_monster(sample_monster.splitlines())
+
+def rotate_puzzle(puzzle):
+    return list("".join(e) for e in zip(*puzzle[::-1]))
+
+def reflect_puzzle(puzzle):
+    return list("".join(e[::-1]) for e in puzzle)
+
+def find_monsters(puzzle):
+    counter = 0
+    for i in range(len(puzzle)-2):
+        for j in range(len(puzzle[i])-19):
+            checking = [puzzle[i][j:j+20], puzzle[i+1][j:j+20], puzzle[i+2][j:j+20]]
+            if is_a_monster(checking):
+                counter += 1
+    return counter
+
+proper_orientated_puzzle = rotate_puzzle(rotate_puzzle(reflect_puzzle(result_puzzle)))
+number_of_monsters = find_monsters(proper_orientated_puzzle)
+
+print(f"Got {number_of_monsters} monsters!")
+
+sharps_in_monster = 15 
+
+overall = sum(e.count('#') for e in proper_orientated_puzzle)
+answer_2 = overall - (sharps_in_monster * number_of_monsters)
+
+print(f"Answer = {answer_2}")
