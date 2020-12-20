@@ -33,9 +33,6 @@ def parse_tiles(lines):
 
 tiles = list(parse_tiles(lines))    
 print(f"Number of tiles {len(tiles)}")
-print(f"Tile size 10x10")
-# pprint(tiles[0])
-# pprint(tiles[-1])
 
 def build_adjacent_edges_map(tiles):
     result = {}
@@ -79,11 +76,11 @@ print("==== Part 2 ====")
 
 tiles_map = { tile['index']: tile for tile in tiles }
 
-def rotate_entries(original):
+def rotate(original):
     return zip(*original[::-1])
 
 def rotate_tile(tile):
-    new_entries = list("".join(e) for e in rotate_entries(tile['entries']))
+    new_entries = list("".join(e) for e in rotate(tile['entries']))
     return {
         'index': tile['index'],
         'entries': new_entries,
@@ -106,9 +103,6 @@ def describe_tile(d_tile, adjacent_map, edges_map):
 
     neighbours = adjacent_map[d_tile['index']]
     print(f"Neighbours {neighbours}")
-    # for neighbour in neighbours:
-    #     n_tile = tiles_map[neighbour]
-    #     print(f"Neighbour {neighbour} {n_tile['edges']}")
 
 # edges: 0 - top, 1 - bottom, 2 - left, 3 - right
 def get_neightbour(tile, edges_map, index):
@@ -181,7 +175,7 @@ def normalize_line(prev_tile_key, tiles_map, edges_map, upper_line_indexes):
         current_tile_key = get_right_neightbour(tiles_map[current_tile_key], edges_map)        
     return indexes
 
-def normalize_tiles(top_left, tiles_map, adjacent_map, edges_map):  
+def normalize_tiles(top_left, tiles_map, edges_map):  
     start_indexes = normalize_first_column(top_left, tiles_map, edges_map)  
     # pprint(start_indexes)
     
@@ -198,17 +192,16 @@ def normalize_tiles(top_left, tiles_map, adjacent_map, edges_map):
     return row_indexes
 
 tiles_map['3221'] = rotate_tile(rotate_tile(tiles_map['3221']))
-# describe_tile(d_tile=tiles_map['3221'], adjacent_map=adjacent_map, edges_map=edges_map)
-row_indexes = normalize_tiles(top_left='3221', tiles_map=tiles_map, adjacent_map=adjacent_map, edges_map=edges_map)
+describe_tile(d_tile=tiles_map['3221'], adjacent_map=adjacent_map, edges_map=edges_map)
+row_indexes = normalize_tiles(top_left='3221', tiles_map=tiles_map, edges_map=edges_map)
+       
+def print_raw_indexes(idx):
+    for e in idx:
+        print(e)            
 
-tiles_map_clean = deepcopy(tiles_map)
-for index_row,row in enumerate(row_indexes):
-    for index_column,tile_key in enumerate(row):
-        tiles_map_clean[tile_key]['entries'] = tiles_map_clean[tile_key]['entries'][:-1]
-        tiles_map_clean[tile_key]['entries'] = tiles_map_clean[tile_key]['entries'][1:]
-        tiles_map_clean[tile_key]['entries'] = list("".join(e[:-1]) for e in tiles_map_clean[tile_key]['entries'])
-        tiles_map_clean[tile_key]['entries'] = list("".join(e[1:]) for e in tiles_map_clean[tile_key]['entries'])          
-            
+print("After tiles normalized:")
+print_raw_indexes(row_indexes)
+
 # ['3221', '3313', '1451', '2143', '1283', '3803', '3989', '2267', '1453', '3413', '2609', '3343']
 # ['3169', '1999', '1777', '2887', '1579', '3373', '1447', '1229', '2437', '1031', '3529', '2719']
 # ['3659', '2381', '1907', '3581', '3677', '3527', '2017', '2521', '1483', '1097', '1511', '1223']
@@ -221,6 +214,15 @@ for index_row,row in enumerate(row_indexes):
 # ['2243', '2423', '1669', '3943', '3559', '3217', '3739', '2179', '1997', '3469', '2239', '1009']
 # ['2203', '3727', '2897', '2819', '3511', '3299', '2039', '3617', '1201', '3701', '2687', '1913']
 # ['3323', '3499', '3709', '1931', '2999', '2539', '3881', '1123', '1321', '2833', '2251', '3931']
+
+tiles_map_clean = deepcopy(tiles_map)
+for index_row,row in enumerate(row_indexes):
+    for index_column,tile_key in enumerate(row):
+        tiles_map_clean[tile_key]['entries'] = tiles_map_clean[tile_key]['entries'][:-1]
+        tiles_map_clean[tile_key]['entries'] = tiles_map_clean[tile_key]['entries'][1:]
+        tiles_map_clean[tile_key]['entries'] = list("".join(e[:-1]) for e in tiles_map_clean[tile_key]['entries'])
+        tiles_map_clean[tile_key]['entries'] = list("".join(e[1:]) for e in tiles_map_clean[tile_key]['entries'])          
+     
 def prepare_puzzle(tm, row_indexes):
     puzzle = []
     for row in row_indexes:        
@@ -229,11 +231,14 @@ def prepare_puzzle(tm, row_indexes):
         puzzle += result_entries
     return puzzle
             
-
 result_puzzle = prepare_puzzle(tiles_map_clean, row_indexes)
 
-# for row in result_puzzle:
-#     print(row)
+def print_puzzle(puzzle):
+    for row in puzzle:
+        print(row)
+
+print("Puzzle after cleanup")
+print_puzzle(result_puzzle)
 
 def is_a_monster(lines):
     assert len(lines) == 3
@@ -254,7 +259,7 @@ sample_monster = """\
 assert is_a_monster(sample_monster.splitlines())
 
 def rotate_puzzle(puzzle):
-    return list("".join(e) for e in zip(*puzzle[::-1]))
+    return list("".join(e) for e in rotate(puzzle))
 
 def reflect_puzzle(puzzle):
     return list("".join(e[::-1]) for e in puzzle)
@@ -274,8 +279,9 @@ number_of_monsters = find_monsters(proper_orientated_puzzle)
 print(f"Got {number_of_monsters} monsters!")
 
 sharps_in_monster = 15 
-
 overall = sum(e.count('#') for e in proper_orientated_puzzle)
 answer_2 = overall - (sharps_in_monster * number_of_monsters)
 
 print(f"Answer = {answer_2}")
+
+assert answer_2 == 1885
