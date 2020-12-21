@@ -40,7 +40,7 @@ def search_allergy_words(ingridient, parse_lines):
     return result
 
 allergens_keys = set(k for k,_ in allergens_map)
-print(allergens_keys)
+# print(allergens_keys)
 
 allergens_guess = {key: search_allergy_words(key, allergens_map) for key in allergens_keys}
 # pprint(allergens_guess)
@@ -62,21 +62,21 @@ allergens_guess_clean = {k:next(iter(v)) for k,v in cleanup(allergens_guess).ite
 allergens = set(allergens_guess_clean.values())
 print(f"Found allergens: {allergens}")
 
-no_allergens = set()
-for _,ingredients in lines_p:
-    no_allergens_step = set(ingredients).difference(allergens)
-    no_allergens = no_allergens.union(no_allergens_step)
-
-print(f"Total {len(no_allergens)} ingredients without allergies")
-
 counter = 0
 for _,ingredients in lines_p:
-    for ingredient in ingredients:
-        if ingredient in no_allergens:
-            counter += 1
+    counter += sum((1 for e in ingredients if e not in allergens))
 
 print(f"Answer 1 = {counter}")
 
 assert counter == 2635
 
 print("==== Part 2 ====")
+
+translated_keys = list(allergens_guess_clean.keys())
+translated_keys.sort()
+print(f"Sorted translated allergens {translated_keys}")
+answer_2 = ",".join(list(allergens_guess_clean[e] for e in translated_keys))
+
+print(f"Answer 2 = {answer_2}")
+
+assert answer_2 == 'xncgqbcp,frkmp,qhqs,qnhjhn,dhsnxr,rzrktx,ntflq,lgnhmx'
