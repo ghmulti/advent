@@ -245,9 +245,9 @@ def is_a_monster(lines):
     assert len(lines[0]) == len(lines[1]) == len(lines[2]) == 20
     if lines[0][18] != '#':
         return False
-    if next((lines[1][e] for e in [0,5,6,11,12,17,18,19] if lines[1][e] != '#'), False):
+    if any((True for e in [0,5,6,11,12,17,18,19] if lines[1][e] != '#')):
         return False
-    if next((lines[2][e] for e in [1,4,7,10,13,16] if lines[2][e] != '#'), False):
+    if any((True for e in [1,4,7,10,13,16] if lines[2][e] != '#')):
         return False
     return True        
 
