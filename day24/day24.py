@@ -49,8 +49,45 @@ for key,entry in floor.items():
 
 # pprint(floor)
 
+
 print(f"Answer = {counter} [of {len(lines)}, {len(floor)}]")
 
 assert counter == 400
 
 print("==== Part 2 ==== ")
+
+def find_neighbours_black(x, y, flr):
+    for _, pos in dd.items():
+        diffx, diffy = pos
+        target_pos =(x-diffx,y-diffy)
+        tile = flr.get(target_pos)
+        if tile and tile % 2 != 0:
+            yield target_pos
+
+
+def iterate(flr):
+    new_floor = {}
+    for i in range(-100, 100):
+        for j in range(-100, 100):
+            tile = flr.get((i,j))
+            is_white = not tile or tile % 2 == 0
+            neighbours = list(find_neighbours_black(i, j, flr))
+            if is_white and len(neighbours) == 2:
+                new_floor[(i,j)] = 1
+            if not is_white:
+                if len(neighbours) == 0 or len(neighbours) > 2:
+                    continue
+                else:
+                    new_floor[(i,j)] = 1                
+    return new_floor                    
+
+new_flr = floor
+for i in range(100):
+    # print(f"Day {i}")
+    new_flr = iterate(new_flr)
+
+answer_2 = len(new_flr)
+
+print(f"Answer = {answer_2}")
+
+assert answer_2 == 3768
