@@ -52,3 +52,5 @@ for key,entry in floor.items():
 print(f"Answer = {counter} [of {len(lines)}, {len(floor)}]")
 
 assert counter == 400
+
+print("==== Part 2 ==== ")
