@@ -41,37 +41,39 @@ print(f"Answer = {answer_1}")
 print("==== Part 2 ====")
 
 class Node:
-    def __init__(self, value):
-        self.next = self.prev = None
+    def __init__(self, value, prev=None):
+        self.next = None
+        self.prev = prev
         self.value = value
 
 class LinkedListWithCache:
     def __init__(self, values):
-        self.cache = {}
-        head = prev = None
-        for value in values:
-            node = Node(value)
-            if not head:
-                head = node
-            if prev:
-                prev.next = node
-                node.prev = prev
-            self.cache[value] = prev = node
+        head = Node(values[0])
+        prev = head
+        self.cache = {head.value: head}
+        for i, value in enumerate(values):
+            if i == 0:
+                continue
+            node = Node(value, prev=prev)
+            prev.next = node
+            self.cache[value] = node            
+            prev = node            
         head.prev = prev
         prev.next = head
     
     def get(self, key):
         return self.cache[key]
 
-    def move(self, source, dest):
-        item, destination = self.cache[source], self.cache[dest]
-        prev_next = destination.next
-        item.prev.next = item.next
-        item.next.prev = item.prev
-        destination.next.prev = item
-        destination.next = item
-        item.prev = destination
-        item.next = prev_next
+    def move(self, src, dest):
+        source = self.cache[src]
+        destination = self.cache[dest]
+        dest_next = destination.next
+        source.prev.next = source.next
+        source.next.prev = source.prev
+        destination.next.prev = source
+        destination.next = source
+        source.prev = destination
+        source.next = dest_next
 
 def select_destination_wrapper(lowest, highest):
     def fn(pick, current_cup):

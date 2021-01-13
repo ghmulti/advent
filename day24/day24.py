@@ -8,12 +8,12 @@ ddirs = ["se", "sw", "nw", "ne"]
 floor = {}
 
 dd = {
-    'e': (1, 0),
-    'se': (1, 1),
-    'sw': (0, 1),
-    'w': (-1, 0),
-    'nw': (-1, -1),
-    'ne': (0, -1) 
+    "e":  (1, 0),
+    "se": (1, 1),
+    "sw": (0, 1),
+    "w":  (-1, 0),
+    "nw": (-1, -1),
+    "ne": (0, -1) 
 }
 
 def parse_direction(direct, pos):
@@ -46,9 +46,7 @@ for key,entry in floor.items():
     if entry % 2 != 0:
         counter += 1
 
-
 # pprint(floor)
-
 
 print(f"Answer = {counter} [of {len(lines)}, {len(floor)}]")
 
